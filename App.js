@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
-
+import { StyleSheet, Text, View, SafeAreaView, I18nManager } from 'react-native';
 import Wizard from './components/wizard'
 import ElementRender from './components/formRender/elementRender'
+
+I18nManager.forceRTL(true)
 
 const service = 	{
   id: 1,

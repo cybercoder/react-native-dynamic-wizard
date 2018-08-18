@@ -1,8 +1,12 @@
 import React, {Component} from 'react'
-import {StyleSheet, View,Text, } from 'react-native'
+import {StyleSheet, View,Text,Picker, TouchableOpacity} from 'react-native'
 import {FormInput, Button,Card, Icon} from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation'
+import GridView from 'react-native-super-grid'
 import ElementRender from './formRender/elementRender'
+import axios from 'axios'
+
+import config from '../config'
 
 class FirstStep extends Component {
     constructor(props) {
@@ -21,6 +25,7 @@ class FirstStep extends Component {
             fieldCount : fieldCount,
             data : {
                 location : '',
+                date : '',
                 moment : '',
                 excerpt : '',
                 estimatedCost : '',
@@ -83,8 +88,6 @@ class DynaStep extends Component {
                 ...this.state.data,
                 formData : formData
             }
-        },()=>{
-            alert(JSON.stringify(this.state.data))
         })
     }
 
@@ -96,7 +99,11 @@ class DynaStep extends Component {
             <ElementRender field={this.state.field} onChange={(model)=>this.onChange(model)}/>
             {
             (this.state.FieldIndex===this.state.fieldCount) ? (
-                <Button title='پایان دینامیک'/>
+                <Button title='ادامه'
+                onPress={() => this.props.navigation.push('DateStep', {
+                    data : this.state.data
+                })}
+                />
             ):(
             <Button
                 icon={<Icon name='code' color='#ffffff' />}
@@ -116,12 +123,121 @@ class DynaStep extends Component {
     }
 }
 
-const Wizard = createStackNavigator({
+class DateStep extends Component {
+    constructor(props) {
+        super(props)
+        let {data} = this.getNavigationParams()
+        this.state = {
+            loading : true,
+            dateTimes : [{times:[]}],
+            dateTimeIndex : 0,
+            // should handle from
+            data : {
+                location : '',
+                date : '',
+                moment : '',
+                excerpt : '',
+                estimatedCost : '',
+                address : '',
+                additionalPhone : '',
+                formData : {}
+            }
+        }
+        this.getDateTimes()
+    }
+
+    getNavigationParams() {
+        return this.props.navigation.state.params || {}
+    }
+
+    getDateTimes() {
+        axios.get(`${config.ServerURI}/api/service/datetimerange`)
+        .then(res=>{
+            this.setState({
+                dateTimes:res.data,
+                loading : false
+            })
+        })
+
+    }
+
+    onDatePress(date,index) {
+        this.setState({
+            ...this.state,
+            dateTimeIndex : index,
+            data : {
+                ...this.state.data,
+                date: date
+            }
+        })
+    }
+
+    render() {
+        return (
+            <Card title="چه زمانی به این سرویس نیاز دارید؟">
+                <GridView
+                    itemDimension={50}
+                    items={this.state.dateTimes}
+                    renderItem={(item,index) => (
+                        <TouchableOpacity
+                            onPress={()=>this.onDatePress(item.value,index)}
+                            style={
+                                item.value === this.state.data.date ? (
+                                    styles.DataItemSelected
+                                ) : (
+                                    styles.DateItem
+                                )
+                            }
+                        >
+                            <Text style={styles.DateItemLabel}>{item.label}</Text>
+                            <Text>{item.jalali}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+                <GridView
+                    itemDimension={90}
+                    items={this.state.dateTimes[this.state.dateTimeIndex].times}
+                    renderItem={(item,index) => (
+                        <TouchableOpacity
+                            onPress={
+                                ()=>{
+                                    this.setState({
+                                        ...this.state,
+                                        data : {
+                                            ...this.state.data,
+                                            moment: item.value
+                                        }
+                                    })
+                                }                                
+                            }
+                            style={
+                                item.value === this.state.data.moment ? (
+                                    styles.DataItemSelected
+                                ) : (
+                                    styles.DateItem
+                                )
+                            }
+                        >
+                            <Text>{item.label}</Text>
+                        </TouchableOpacity>
+                    )}                    
+                />
+
+                <Button buttonStyle={styles.button} disabledStyle={styles.disabledButton} title='ادامه' disabled={!(this.state.data.date && this.state.data.moment)}></Button>
+            </Card>
+        )
+    }
+}
+
+const Wizard = createStackNavigator({  
     FirstStep: {
       screen: FirstStep
     },
     DynaStep : {
         screen : DynaStep
+    },
+    DateStep : {
+        screen : DateStep
     }
 })
 
@@ -132,6 +248,32 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    DateItem : {
+        alignItems: 'center',
+        justifyContent: 'center',        
+        borderWidth : 1,
+        borderColor : '#000',
+        padding : 5,
+        borderRadius : 7,
+    },
+    DataItemSelected : {
+        alignItems: 'center',
+        justifyContent: 'center',        
+        borderWidth : 2,
+        borderColor : '#000',
+        padding : 5,
+        borderRadius : 7,
+    },
+    DateItemLabel : {
+        color : 'green',
+        
+    },
+    button : {
+        backgroundColor : 'rgba(92, 99,216, 1)',
+    },
+    disabledButton : {
+        backgroundColor : 'rgba(92, 99,216, 0.1)'
+    }
   });
 
 export default Wizard
