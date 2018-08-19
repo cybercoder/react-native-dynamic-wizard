@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import {StyleSheet, View,Text,Picker, TouchableOpacity, StatusBar} from 'react-native'
-import {FormInput, Button,SearchBar,Card, Icon} from 'react-native-elements'
+import {StyleSheet, View,Text,TextInput ,Picker, TouchableOpacity, StatusBar} from 'react-native'
+import { Input ,FormInput, Button,SearchBar,Card} from 'react-native-elements'
+import Icon from 'react-native-vector-icons/Ionicons'
 import { createStackNavigator } from 'react-navigation'
 import GridView from 'react-native-super-grid'
 import ElementRender from './formRender/elementRender'
@@ -33,7 +34,8 @@ class FirstStep extends Component {
                 estimatedCost : '',
                 address : '',
                 additionalPhone : '',
-                formData : formData
+                formData : formData,
+                ServiceId : service.id
             }
         }
 
@@ -49,9 +51,7 @@ class FirstStep extends Component {
         </Text> */}
         <FormInput multiline onChangeText={(excerpt) => this.setState({data : {...this.state.data, excerpt : excerpt}})} value={this.state.data.excerpt}/>
         <Button
-            icon={<Icon name='code' color='#ffffff' />}
-            backgroundColor='#03A9F4'
-            buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+            buttonStyle={styles.button}
             title='ادامه'
             onPress={() => this.props.navigation.navigate('DynaStep', {
                 FieldIndex : 0,
@@ -104,6 +104,7 @@ class DynaStep extends Component {
             (this.state.FieldIndex===this.state.fieldCount) ? (
                 <Button
                 title='ادامه'
+                buttonStyle={styles.button}
                 disabled={!(this.state.data.formData[this.state.FieldIndex].value.length>0)}
                 onPress={() => this.props.navigation.navigate('DateStep', {
                     data : this.state.data
@@ -111,7 +112,6 @@ class DynaStep extends Component {
                 />
             ):(
             <Button
-                icon={<Icon name='code' color='#ffffff' />}              
                 title='ادامه'
                 buttonStyle={styles.button}
                 disabledStyle={styles.disabledButton}
@@ -256,7 +256,7 @@ class MapStep extends Component {
         axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&language=fa&key=AIzaSyBhgTUioHVo0QhF5URPVFQVnCze4SYMO7c`)
         .then(res=>{
             this.setState({
-                address : res.data.results[0].formatted_address
+                address : res.data.results[0].formatted_address,
             })
         })
     }
@@ -321,10 +321,12 @@ class MapStep extends Component {
                     />
                 </MapView>
                 <Button
+                    style={styles.button}
                     title='ادامه'
                     onPress={() => this.props.navigation.navigate('FinalStep', {
                         data : {
                             ...this.state.data,
+                            location : `${this.state.location.latitude},${this.state.location.longitude}` ,
                             address : `نشانی خودکار:${this.state.address} نشانی دستی:${this.state.manualAddress}`
                         }
                     })}></Button>
@@ -340,8 +342,28 @@ class FinalStep extends Component {
         let {data} = this.getNavigationParams()
 
         this.state = {
-            data : data
+            data : data,
+            additionalPhone : '',
+            estimatedCost : '',
+            sending : false
         }
+    }
+
+    onSubmit() {
+        let {data} = this.state
+        data.estimatedCost = this.state.estimatedCost
+        data.additionalPhone = this.state.additionalPhone
+
+        this.setState({
+            sending : true
+        },()=>{
+            axios.post(`${config.ServerURI}/api/job`,data)
+            .then(res=>{
+                this.setState({
+                    sending : false
+                })
+            })
+        })
     }
 
     getNavigationParams() {
@@ -350,14 +372,46 @@ class FinalStep extends Component {
 
     render() {
         return (
-            <View>
-                <Text>{JSON.stringify(this.state.data,null,2)}</Text>
+            <View style={styles.container}>
+                {/* <Text>{JSON.stringify(this.state.data,null,2)}</Text> */}
+                <Card title="اطلاعات تکمیلی">
+                    <View style={{flexDirection : 'row', marginBottom : 10}}>
+                        <Icon
+                            style={{flex : 0.1}}
+                            name='ios-cash-outline'
+                            size={32}
+                            color='black'
+                        />
+                        <Text style={{flex:0.4, padding : 3}}>مبلغ مورد نظر شما</Text>
+                        <TextInput value={this.state.estimatedCost} onChangeText={(estimatedCost)=>this.setState({estimatedCost})} keyboardType="numeric" style={{flex : 0.5, padding : 3, backgroundColor : 'rgb(248,248,248)' }}></TextInput>
+                    </View>
+                    <View style={{flexDirection : 'row', marginBottom : 25}}>
+                        <Icon
+                            style={{flex : 0.1}}
+                            name='ios-call-outline'
+                            size={32}
+                            color='black'
+                        />
+                        <Text style={{flex:0.4, padding : 3}}>تلفن ثابت</Text>
+                        <TextInput value={this.state.additionalPhone} onChangeText={(additionalPhone)=>this.setState({additionalPhone})} keyboardType="phone-pad" style={{flex : 0.5, padding : 3, backgroundColor : 'rgb(248,248,248)' }}></TextInput>
+                    </View>
+                    <Button
+                        buttonStyle={styles.button}
+                        disabledStyle={styles.disabledButton}
+                        onPress={()=>this.onSubmit()}
+                        title='ارسال درخواست'
+                        loading={this.state.sending}
+                        disabled = {!(this.state.estimatedCost && this.state.additionalPhone) || this.state.sending}
+                    />
+                </Card>
+                
             </View>
         )
     }
 }
 
 const Wizard = createStackNavigator({
+  
     FirstStep: {
       screen: FirstStep
     },
@@ -372,7 +426,7 @@ const Wizard = createStackNavigator({
     },
     FinalStep : {
         screen : FinalStep
-    }
+    },  
    
 })
 
