@@ -20,10 +20,10 @@ class MultiSelect extends Component {
       data : {
         ...this.props.field,
         values : [
-          {
-            label : this.props.field.choices[0],
-            value : this.props.field.choices[0]
-          }
+          // {
+          //   label : this.props.field.choices[0],
+          //   value : this.props.field.choices[0]
+          // }
         ]
       }
     }
@@ -35,11 +35,11 @@ class MultiSelect extends Component {
   }  
  
   onSelectionsChange = (selectedChoices) => {
-    if (selectedChoices.length===0)
-    selectedChoices[0] = {
-      label : this.props.field.choices[0],
-      value : this.props.field.choices[0]
-    }
+    // if (selectedChoices.length===0)
+    // selectedChoices[0] = {
+    //   label : this.props.field.choices[0],
+    //   value : this.props.field.choices[0]
+    // }
     
     // selectedChoices is array of { label, value }
     this.setState({

@@ -21,10 +21,10 @@ class Select extends Component {
       data : {
         ...this.props.field,
         values : [
-          {
-            label : this.props.field.choices[0],
-            value : this.props.field.choices[0]
-          }
+          // {
+          //   label : this.props.field.choices[0],
+          //   value : this.props.field.choices[0]
+          // }
         ]
       }
     }
@@ -35,7 +35,7 @@ class Select extends Component {
     if (this.props.onChange) this.props.onChange(this.state.data.values)
   }
   onSelectionsChange = (selectedChoices) => {
-    console.log(selectedChoices)
+
     let v = []
 
     if (selectedChoices.length!=0)
@@ -43,11 +43,11 @@ class Select extends Component {
             v[0] = selectedChoices.pop()
         else
             v[0] = selectedChoices[0]
-    else
-        v[0] = {
-            label : this.props.field.choices[0],
-            value : this.props.field.choices[0]
-        }
+    // else
+    //     v[0] = {
+    //         label : this.props.field.choices[0],
+    //         value : this.props.field.choices[0]
+    //     }
 
     this.setState({
         data : {
