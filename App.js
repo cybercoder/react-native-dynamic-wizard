@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, SafeAreaView, I18nManager } from 'react-native';
-import Wizard from './components/wizard'
-import ElementRender from './components/formRender/elementRender'
+import { I18nManager } from 'react-native';
+import {createSwitchNavigator} from 'react-navigation'
+
+import TokenCheck from './components/TokenCheck'
+import AuthStack from './components/Auth'
+import AppDrawer from './components/AppDrawer'
 
 I18nManager.forceRTL(true)
 
@@ -58,19 +61,21 @@ const row =
       ]
   }
 
-export default class App extends Component {
-  render() {
-    return (
-      <Wizard screenProps={{service}}/>
-    )
-  }
-}
+// export default class App extends Component {
+//   render() {
+//     return (
+//       <Wizard screenProps={{service}}/>
+//     )
+//   }
+// }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ecec',
-    alignItems: 'center',
-    justifyContent: 'center',
+export default createSwitchNavigator(
+  {
+    TokenCheck: TokenCheck,
+    App: AppDrawer,
+    Auth: AuthStack,
   },
-});
+  {
+    initialRouteName: 'TokenCheck',
+  }
+)

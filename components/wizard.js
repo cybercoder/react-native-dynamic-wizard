@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import {StyleSheet, View,Text,TextInput ,Picker, TouchableOpacity, StatusBar} from 'react-native'
-import { Input ,FormInput, Button,SearchBar,Card} from 'react-native-elements'
+import {StyleSheet, View,Text,TextInput,TouchableOpacity} from 'react-native'
+import { FormInput, Button,SearchBar,Card} from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { createStackNavigator } from 'react-navigation'
 import GridView from 'react-native-super-grid'
