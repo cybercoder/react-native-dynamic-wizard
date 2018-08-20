@@ -9,12 +9,15 @@ import axios from 'axios'
 import MapView from 'react-native-maps'
 import { Marker } from 'react-native-maps'
 
-import config from '../config'
+import config from '../../config'
+
 
 class FirstStep extends Component {
     constructor(props) {
         super(props)
-        let {service} = this.props.screenProps
+        let {service} = this.props.service || this.props.navigation.state.params || this.props.screenProps || []
+        console.log(service)
+        
         let formData = service.DynamicFields.map((field)=>{
             return {
                 label : field.label,
@@ -40,7 +43,21 @@ class FirstStep extends Component {
         }
 
     }
-
+    componentDidMount() {
+        const {goBack} = this.props.screenProps
+        this.props.navigation.setParams({
+            goBack
+        })
+    }
+    static navigationOptions = ({navigation}) => {
+        const {params = {}} = navigation.state
+        let headerTitle = <Button
+                                title="Go back"
+                                onPress={() => params.goBack()}
+                          />
+        let headerTitleStyle = { fontWeight : 'normal', fontSize : 13}
+        return {headerTitle ,headerTitleStyle}
+    }
     render() {
         return (
         <Card
@@ -55,6 +72,7 @@ class FirstStep extends Component {
             title='ادامه'
             onPress={() => this.props.navigation.navigate('DynaStep', {
                 FieldIndex : 0,
+                service : this.state.service,
                 fieldCount : this.state.fieldCount,
                 data : this.state.data
             })}
@@ -67,10 +85,11 @@ class FirstStep extends Component {
 class DynaStep extends Component {
     constructor(props) {
         super(props)
-        let {service} = this.props.screenProps
+        let {service} = this.props.navigation.state.params || this.props.screenProps || []
         let {FieldIndex, fieldCount, data} = this.getNavigationParams()
         let field = service.DynamicFields[FieldIndex]
         this.state = {
+            service : service,
             fieldCount : fieldCount,
             FieldIndex : FieldIndex,
             field : field,
@@ -117,6 +136,7 @@ class DynaStep extends Component {
                 disabledStyle={styles.disabledButton}
                 disabled={!(this.state.data.formData[this.state.FieldIndex].value.length>0)}
                 onPress={() => this.props.navigation.push('DynaStep', {
+                    service : this.state.service,
                     FieldIndex : this.state.FieldIndex+1,
                     fieldCount : this.state.fieldCount,
                     data : this.state.data

@@ -6,12 +6,13 @@ import {createBottomTabNavigator} from 'react-navigation'
 
 
 const Tabs = createBottomTabNavigator({
+    CreateTask:{
+        screen : CreateTask
+    },
     MyTasks : {
         screen : MyTasks
     },
-    CreateTask:{
-        screen : CreateTask
-    }
+
 },{
     animationEnabled : true,
     swipeEnabled : true,

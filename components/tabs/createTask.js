@@ -1,6 +1,31 @@
 import React,{Component} from 'react'
-import {View,Text} from 'react-native'
+import {View,Text, ActivityIndicator} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
+import {createStackNavigator} from 'react-navigation'
+import axios from 'axios'
+import config from '../../config'
+
+import LoadServices from './loadServices'
+import Wizard from './wizard'
+
+class TaskWizard extends Component {
+    constructor(props){
+        super(props)
+        
+    }
+    render() {
+        const screenProps = {
+            ...this.props.navigation.state.params,
+            goBack : ()=>{
+                this.props.navigation.goBack()
+            }
+        }
+        
+        return (
+            <Wizard screenProps={screenProps}/>
+        )
+    }
+}
 
 class CreateTask extends Component {
     static navigationOptions = {
@@ -8,15 +33,34 @@ class CreateTask extends Component {
             <Icon name="ios-add-circle-outline" style={{color : tintColor}} size={30}></Icon>
         )
     }
+    constructor(props) {
+        super(props)
+
+        this.state={
+            loading : true,
+            tree : []
+        }
+
+        axios.get(`${config.ServerURI}/api/category/tree`)
+        .then(res=>{
+            this.setState({
+                loading : false,
+                tree : res.data
+            })
+        },()=>console.log(res.data))
+    }
     render() {
+        if (this.state.loading)
+            return(<ActivityIndicator/>)
         return (
-            <View style={{backgroundColor : 'yellow', flex : 1, alignContent : 'center',alignItems:'center'}}>
-                <Text>
-                    My Tasks
-                </Text>
-            </View>
+            <CreateTaskStack screenProps={{tree : this.state.tree}}/>
         )
     }
 }
+
+const CreateTaskStack = createStackNavigator({
+    LoadServices   : LoadServices,
+    TaskWizard : TaskWizard
+})
 
 export {CreateTask}

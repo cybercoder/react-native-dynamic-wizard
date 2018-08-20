@@ -6,7 +6,7 @@ import TokenCheck from './components/TokenCheck'
 import AuthStack from './components/Auth'
 import AppDrawer from './components/AppDrawer'
 
-I18nManager.forceRTL(true)
+// I18nManager.forceRTL(true)
 
 const service = 	{
   id: 1,
@@ -27,15 +27,25 @@ const service = 	{
       ]
     },
     {
-      name: "Pipe",
-      label : "خرابی از چه نوع است؟",
+      name: "HairColor",
+      label : "علاقه شما به چه رنگیست؟",
       type : "multiselect",
       choices : [
-        'ترکیدگی لوله',
-        'نشتی',
-        'گرفتگی',
-        'قاط زده',
-        'سیفون نمیره',
+        'مسی',
+        'نیلی',
+        'آلبالویی',
+        'شرابی',
+        'بلوند',
+        'طلایی',
+        'صدفی',
+        'عنابی',
+        'بادمجانی کال',
+        'بادمجانی سیر',
+        'مشکی',
+        'قهوه ای',
+        'نقره ای',
+        'هویجی',
+        'هیبرید',                
         'سایر'
       ]
     }    

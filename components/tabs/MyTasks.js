@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import {View,Text} from 'react-native'
+import { SafeAreaView,StatusBar, View,Text} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 class MyTasks extends Component {
@@ -10,11 +10,14 @@ class MyTasks extends Component {
     }
     render() {
         return (
+            <SafeAreaView>
+                <StatusBar></StatusBar>
             <View>
                 <Text>
                     My Tasks
                 </Text>
             </View>
+            </SafeAreaView>
         )
     }
 }
