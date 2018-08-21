@@ -6,7 +6,7 @@ import TokenCheck from './components/TokenCheck'
 import AuthStack from './components/Auth'
 import AppDrawer from './components/AppDrawer'
 
-// I18nManager.forceRTL(true)
+I18nManager.forceRTL(true)
 
 const service = 	{
   id: 1,

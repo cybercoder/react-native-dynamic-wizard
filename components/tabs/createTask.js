@@ -13,6 +13,14 @@ class TaskWizard extends Component {
         super(props)
         
     }
+    
+    static navigationOptions = {
+        header: ( /* Your custom header */
+          <View>
+          </View>
+        )
+    }
+
     render() {
         const screenProps = {
             ...this.props.navigation.state.params,
@@ -61,6 +69,13 @@ class CreateTask extends Component {
 const CreateTaskStack = createStackNavigator({
     LoadServices   : LoadServices,
     TaskWizard : TaskWizard
+},{
+    navigationOptions: {
+        headerStyle: {
+          backgroundColor: "#fffdfb"// "rgba(8, 129, 163, 1)",
+        },
+        headerTintColor: '#000',
+      }
 })
 
 export {CreateTask}

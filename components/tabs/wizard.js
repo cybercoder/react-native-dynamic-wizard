@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet, View,Text,TextInput,TouchableOpacity} from 'react-native'
+import {StyleSheet, View,Text,TextInput,TouchableOpacity, ScrollView} from 'react-native'
 import { FormInput, Button,SearchBar,Card} from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { createStackNavigator } from 'react-navigation'
@@ -51,12 +51,12 @@ class FirstStep extends Component {
     }
     static navigationOptions = ({navigation}) => {
         const {params = {}} = navigation.state
-        let headerTitle = <Button
-                                title="Go back"
-                                onPress={() => params.goBack()}
-                          />
-        let headerTitleStyle = { fontWeight : 'normal', fontSize : 13}
-        return {headerTitle ,headerTitleStyle}
+        // let headerTitle=
+        let headerLeft = <TouchableOpacity style={{paddingLeft:10}} onPress={() => params.goBack()}>
+                            <Icon name="ios-redo-outline" style={{paddingLeft:10}} size={35}/>
+                         </TouchableOpacity>
+        
+        return {headerLeft}
     }
     render() {
         return (
@@ -115,36 +115,38 @@ class DynaStep extends Component {
 
     render() {
         return(
-            <Card
-            title={this.state.field.label}
-            >
-            <ElementRender field={this.state.field} onChange={(model)=>this.onChange(model)}/>
-            {
-            (this.state.FieldIndex===this.state.fieldCount) ? (
+            <ScrollView>
+                <Card
+                title={this.state.field.label}
+                >
+                <ElementRender field={this.state.field} onChange={(model)=>this.onChange(model)}/>
+                {
+                (this.state.FieldIndex===this.state.fieldCount) ? (
+                    <Button
+                    title='ادامه'
+                    buttonStyle={styles.button}
+                    disabled={!(this.state.data.formData[this.state.FieldIndex].value.length>0)}
+                    onPress={() => this.props.navigation.navigate('DateStep', {
+                        data : this.state.data
+                    })}
+                    />
+                ):(
                 <Button
-                title='ادامه'
-                buttonStyle={styles.button}
-                disabled={!(this.state.data.formData[this.state.FieldIndex].value.length>0)}
-                onPress={() => this.props.navigation.navigate('DateStep', {
-                    data : this.state.data
-                })}
-                />
-            ):(
-            <Button
-                title='ادامه'
-                buttonStyle={styles.button}
-                disabledStyle={styles.disabledButton}
-                disabled={!(this.state.data.formData[this.state.FieldIndex].value.length>0)}
-                onPress={() => this.props.navigation.push('DynaStep', {
-                    service : this.state.service,
-                    FieldIndex : this.state.FieldIndex+1,
-                    fieldCount : this.state.fieldCount,
-                    data : this.state.data
-                })}                
-                />
-            )
-            }
-            </Card>            
+                    title='ادامه'
+                    buttonStyle={styles.button}
+                    disabledStyle={styles.disabledButton}
+                    disabled={!(this.state.data.formData[this.state.FieldIndex].value.length>0)}
+                    onPress={() => this.props.navigation.push('DynaStep', {
+                        service : this.state.service,
+                        FieldIndex : this.state.FieldIndex+1,
+                        fieldCount : this.state.fieldCount,
+                        data : this.state.data
+                    })}                
+                    />
+                )
+                }
+                </Card>
+            </ScrollView>
         )
     }
 }
@@ -475,10 +477,10 @@ const styles = StyleSheet.create({
         
     },
     button : {
-        backgroundColor : 'rgba(92, 99,216, 1)',
+        backgroundColor : 'rgba(8, 129, 163, 1)',
     },
     disabledButton : {
-        backgroundColor : 'rgba(92, 99,216, 0.1)'
+        backgroundColor : 'rgba(8, 129, 163, 0.1))'
     },
     map : {
         flex : 0.99,

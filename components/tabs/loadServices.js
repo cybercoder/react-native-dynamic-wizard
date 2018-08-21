@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground} from 'react-native'
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity,SafeAreaView,StatusBar ,ImageBackground} from 'react-native'
 import axios from 'axios'
 import {ListItem} from 'react-native-elements'
 import GridView from 'react-native-super-grid'
@@ -37,7 +37,7 @@ class LoadServices extends Component {
     renderLeafs() {
         return(
             <GridView
-                itemDimension={128}
+                itemDimension={80}
                 items={this.state.leafs}
                 style={styles.gridView}
                 renderItem={service => (
@@ -49,7 +49,7 @@ class LoadServices extends Component {
                 >
                     <ImageBackground
                     source={{ uri : (service.icons && service.icons.length>0) ? `${config.ServerURI}/api/service/${service.id}/icons/${service.icons[0]}` : "http://"}}
-                    style={styles.container}
+                    style={styles.gridContainer}
                     >
                     <Text style={styles.itemName}>{service.title}</Text>
                     </ImageBackground>
@@ -69,29 +69,36 @@ class LoadServices extends Component {
 
     render() {
         return (
-            <View style={{flex : 1, backgroundColor : '#fff'}}>
-                <ScrollView>
-                {
-                    this.state.tree.map((node, index)=>{
-                        return  <ListItem
-                                    key={index}
-                                    title={node.title}
-                                    avatar = {{uri : `${config.ServerURI}/api/category/${node.id}/icons/${node.icons[0]}`}}
-                                    avatarStyle={{borderRadius:50, backgroundColor : '#fff'}}
-                                    onPress={()=>this.TraverseNextTier(node)}
-                                />
-                    })
-                }
-                {this.renderLeafs()}
-                </ScrollView>
-            </View>
+            <SafeAreaView style={styles.container}>
+                <StatusBar barStyle="dark-content"/>
+                <View style={styles.container}>
+                    <ScrollView>
+                    {
+                        this.state.tree.map((node, index)=>{
+                            return  <ListItem
+                                        key={index}
+                                        title={node.title}
+                                        avatar = {{uri : `${config.ServerURI}/api/category/${node.id}/icons/${node.icons[0]}`}}
+                                        avatarStyle={{borderRadius:50, backgroundColor : '#fff'}}
+                                        onPress={()=>this.TraverseNextTier(node)}
+                                    />
+                        })
+                    }
+                    {this.renderLeafs()}
+                    </ScrollView>
+                </View>
+            </SafeAreaView>
         )
     }
 }
 
 
 const styles = StyleSheet.create({
-    container: {
+    container :{
+        flex : 1,
+        backgroundColor : '#fff'
+    },
+    gridContainer: {
       flex: 1,
       backgroundColor : '#fff',
       alignItems: 'flex-end',
@@ -105,10 +112,10 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-end',
       borderRadius: 5,
       padding: 10,
-      height: 150,
+      height: 80,
     },
     itemName: {
-      fontSize: 22,
+      fontSize: 18,
       color: '#2e003e',
       fontWeight: '600',
     },

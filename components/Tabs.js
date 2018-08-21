@@ -6,12 +6,13 @@ import {createBottomTabNavigator} from 'react-navigation'
 
 
 const Tabs = createBottomTabNavigator({
+    MyTasks : {
+        screen : MyTasks
+    },    
     CreateTask:{
         screen : CreateTask
     },
-    MyTasks : {
-        screen : MyTasks
-    },
+
 
 },{
     animationEnabled : true,
@@ -25,7 +26,7 @@ const Tabs = createBottomTabNavigator({
                 }
             })
         },
-        activeTintColor : "#000",
+        activeTintColor : "#0881a3",
         inactiveTintColor : "#d1cece",
         showLabel : false,
         showIcon : true
