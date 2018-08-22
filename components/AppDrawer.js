@@ -54,7 +54,7 @@ class Profile extends Component {
                     <ListItem icon onPress={this._signOutAsync}>
                         <Left>
                             <Button style={{ backgroundColor: "#FF9501" }}>
-                                <Icon active name="signout" />
+                                <Icon active name="ios-exit-outline" />
                             </Button>
                         </Left>
                         <Body>
@@ -100,9 +100,8 @@ class OtherScreen extends Component {
 
 
 const AppDrawerNavigator = createDrawerNavigator({
-    Other: OtherScreen,
     Tabs: Tabs,
-    
+    Other: OtherScreen,
   },{
       contentComponent: Profile,
       drawerBackgroundColor: "#fffdfb"

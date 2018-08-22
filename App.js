@@ -81,9 +81,9 @@ const row =
 
 export default createSwitchNavigator(
   {
-    TokenCheck: TokenCheck,
-    App: AppDrawer,
     Auth: AuthStack,
+    App: AppDrawer,
+    TokenCheck: TokenCheck,
   },
   {
     initialRouteName: 'TokenCheck',

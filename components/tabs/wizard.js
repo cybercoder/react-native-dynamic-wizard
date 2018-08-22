@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet, View,Text,TextInput,TouchableOpacity, ScrollView} from 'react-native'
+import {StyleSheet, View,Text,TextInput,TouchableOpacity, ScrollView, AsyncStorage} from 'react-native'
 import { FormInput, Button,SearchBar,Card} from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { createStackNavigator } from 'react-navigation'
@@ -367,23 +367,31 @@ class FinalStep extends Component {
             data : data,
             additionalPhone : '',
             estimatedCost : '',
-            sending : false
+            sending : false,
+            sent : false
         }
     }
 
-    onSubmit() {
+    async onSubmit() {
+        let userToken = await AsyncStorage.getItem('userToken');
         let {data} = this.state
         data.estimatedCost = this.state.estimatedCost
         data.additionalPhone = this.state.additionalPhone
 
         this.setState({
-            sending : true
+            // sending : true
         },()=>{
-            axios.post(`${config.ServerURI}/api/job`,data)
+            axios.post(`${config.ServerURI}/api/job`,data,{
+                'headers' : {
+                    'x-access-token' : userToken
+                }
+            })
             .then(res=>{
                 this.setState({
-                    sending : false
+                    sending : false,
+                    sent : true
                 })
+                
             })
         })
     }
@@ -393,6 +401,14 @@ class FinalStep extends Component {
     }
 
     render() {
+        if(this.state.sent)
+            return(
+                <View>
+                    <Text style={{color:green}}>
+                        درخواست سرویس شما با موفقیت ارسال شد و از بخش درخواست های من قابل پیگیریست.
+                    </Text>
+                </View>
+            )
         return (
             <View style={styles.container}>
                 {/* <Text>{JSON.stringify(this.state.data,null,2)}</Text> */}
